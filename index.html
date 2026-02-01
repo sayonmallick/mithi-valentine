@@ -90,11 +90,10 @@
       position: absolute;
       bottom: -60px;
       user-select: none;
-      will-change: transform;
     }
     @keyframes heartFloat {
       0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -102,6 +101,7 @@
 
   <audio id="loveMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
   <div id="page1">
@@ -149,43 +149,37 @@
     function spawnHeart() {
       const el = document.createElement('div');
       el.className = 'heart';
+      el.textContent = '❤️';
       
-      // Using specific colored heart characters for reliability
-      const coloredHearts = [
-        { char: '💙', color: 'blue' },   // Blue
-        { char: '💛', color: 'yellow' }, // Yellow
-        { char: '❤️', color: 'red' },    // Red
-        { char: '💚', color: 'green' }   // Green
-      ];
-      
-      const choice = coloredHearts[Math.floor(Math.random() * coloredHearts.length)];
-      el.textContent = choice.char;
+      // COLOR PALETTE
+      const colors = ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']; 
+      el.style.color = colors[Math.floor(Math.random() * colors.length)];
       
       el.style.left = Math.random() * 100 + 'vw';
-      el.style.fontSize = (20 + Math.random() * 25) + 'px';
+      el.style.fontSize = (15 + Math.random() * 30) + 'px';
       el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
       
       heartsLayer.appendChild(el);
       setTimeout(() => el.remove(), 7000);
     }
 
-    // This makes hearts appear on BOTH pages immediately
-    setInterval(spawnHeart, 350);
+    // This makes hearts appear on Page 1 AND Page 2
+    setInterval(spawnHeart, 400);
 
     // --- TRANSITION ON YES ---
     yesBtn.addEventListener('click', () => {
-      // Start Music
-      music.play().catch(e => console.log("Audio requires interaction"));
+      // 1. Play Music
+      music.play().catch(e => console.log("Audio play blocked until interaction"));
 
-      // Confetti with matching colors
+      // 2. Celebration
       confetti({ 
         particleCount: 150, 
         spread: 70, 
         origin: { y: 0.6 },
-        colors: ['#0000FF', '#FFFF00', '#FF0000', '#008000']
+        colors: ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']
       });
 
-      // Switch Pages
+      // 3. Change Background & Page
       setTimeout(() => {
         page1.style.display = 'none';
         body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
