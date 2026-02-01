@@ -13,12 +13,12 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      /* CHANGED: Initial background color to Red */
-      background: #d1004f; 
+      /* FORCED RED FOR FIRST PAGE */
+      background-color: #e60026 !important; 
       font-family: 'Arial', sans-serif;
       overflow: hidden;
       transition: background 1.5s ease;
-      color: white; /* Changed text color to white for better contrast on red */
+      color: white;
       text-align: center;
     }
 
@@ -30,8 +30,8 @@
       z-index: 10;
     }
     #page1 h1 {
-        color: white;
-        text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+        font-size: 32px;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
     }
     .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
     button {
@@ -42,8 +42,8 @@
       cursor: pointer;
       font-weight: bold;
     }
-    #yes { background: white; color: #d1004f; } /* Swapped colors for visibility on red */
-    #no  { background: #555; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
+    #yes { background: white; color: #e60026; } 
+    #no  { background: #333; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
 
     /* --- PAGE 2: LOVE PAGE --- */
     #page2 {
@@ -52,52 +52,51 @@
       width: 100%;
     }
     #page2 h1 {
-      font-size: 48px;
+      font-size: 52px;
       font-weight: bold;
       margin-bottom: 20px;
       color: white;
-      text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      text-shadow: 2px 2px 15px rgba(0,0,0,0.2);
       font-family: 'Courier New', Courier, monospace;
     }
 
+    /* Ribbon / Swash Style */
+    .ribbon-container {
+      margin: 10px auto 30px auto;
+      width: 300px;
+    }
+
     #surpriseBtn {
-      background: #ff5e99;
+      background: #ff4d88;
       color: white;
       padding: 14px 45px;
       font-size: 18px;
       border-radius: 30px;
-      box-shadow: 0 4px 15px rgba(255, 94, 153, 0.4);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
       cursor: pointer;
       border: none;
       margin-bottom: 20px;
       transition: transform 0.2s;
     }
-
-    /* Heart Line Sign Style */
-    .heart-divider {
-      width: 320px;
-      height: auto;
-      margin: 10px auto;
-      display: block;
-    }
+    #surpriseBtn:hover { transform: scale(1.05); }
 
     #secret {
       display: none; 
       margin: 20px auto;
-      font-size: 22px;
-      max-width: 85%;
+      font-size: 20px;
+      max-width: 80%;
       line-height: 1.6;
       color: white;
-      background: rgba(255, 255, 255, 0.25);
-      padding: 25px;
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 20px;
+      border-radius: 15px;
       backdrop-filter: blur(10px);
-      animation: fadeIn 0.8s ease-in;
+      animation: fadeIn 1s ease-in;
     }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     /* --- EFFECTS --- */
@@ -106,13 +105,12 @@
       left: 50%;
       top: 45%;
       transform: translate(-50%, -50%) scale(0.9);
-      max-width: 70%;
-      max-height: 60%;
-      border-radius: 12px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      max-width: 60%;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 220ms ease, transform 300ms cubic-bezier(.2,.9,.2,1);
+      transition: opacity 0.3s ease, transform 0.4s cubic-bezier(.17,.67,.83,.67);
       z-index: 9999;
     }
     #sticker.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
@@ -128,8 +126,25 @@
       position: absolute;
       bottom: -60px;
       user-select: none;
-      will-change: transform, opacity;
     }
     @keyframes heartFloat {
-      0%   { transform: translateY(0) translateX(0) scale(0.85) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-140vh
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="page1">
+    <h1>Will you be my Valentine? 💘</h1>
+    <div class="buttons">
+      <button id="yes" type="button">Yes ❤️</button>
+      <button id="no"  type="button">No 😜</button>
+    </div>
+  </div>
+
+  <div id="page2">
+    <h1>I Love You</h1>
+    
+    <div class="ribbon-container">
+        <svg viewBox="0 0 500
