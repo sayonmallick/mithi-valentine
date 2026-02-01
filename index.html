@@ -13,11 +13,12 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: #ffe6ec; 
+      /* CHANGED: Initial background color to Red */
+      background: #d1004f; 
       font-family: 'Arial', sans-serif;
       overflow: hidden;
       transition: background 1.5s ease;
-      color: #d1004f;
+      color: white; /* Changed text color to white for better contrast on red */
       text-align: center;
     }
 
@@ -28,6 +29,10 @@
       align-items: center;
       z-index: 10;
     }
+    #page1 h1 {
+        color: white;
+        text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+    }
     .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
     button {
       padding: 15px 30px;
@@ -37,7 +42,7 @@
       cursor: pointer;
       font-weight: bold;
     }
-    #yes { background: #ff2f6d; color: white; }
+    #yes { background: white; color: #d1004f; } /* Swapped colors for visibility on red */
     #no  { background: #555; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
 
     /* --- PAGE 2: LOVE PAGE --- */
@@ -127,101 +132,4 @@
     }
     @keyframes heartFloat {
       0%   { transform: translateY(0) translateX(0) scale(0.85) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-140vh) translateX(var(--dx, 0px)) scale(1.05) rotate(var(--rot, 0deg)); opacity: 0; }
-    }
-  </style>
-</head>
-<body>
-
-  <div id="page1">
-    <h1>Will you be my Valentine? 💘</h1>
-    <div class="buttons">
-      <button id="yes" type="button">Yes ❤️</button>
-      <button id="no"  type="button">No 😜</button>
-    </div>
-  </div>
-
-  <div id="page2">
-    <h1>I Love You</h1>
-  
-    
-    <button id="surpriseBtn">Surprise Me</button>
-
-    <div id="secret">
-      💌 Counting down every moment until you're back in my arms. See you soon, my love. Thinking of you and smiling. 🌸✨
-    </div> 
-
-    <svg class="heart-divider" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
-        <path d="M50 50 C 120 50, 150 10, 180 50 C 210 90, 240 50, 350 50" stroke="white" stroke-width="3" fill="transparent" stroke-linecap="round"/>
-        <path d="M165 50 C 165 30, 200 30, 200 50 C 200 70, 165 70, 165 50" stroke="white" stroke-width="3" fill="transparent"/>
-        <path d="M182 50 C 182 35, 210 35, 210 50 C 210 65, 182 65, 182 50" stroke="white" stroke-width="3" fill="transparent"/>
-    </svg>
-  </div> 
-
-  <img id="sticker" src="https://raw.githubusercontent.com/sayonmallick/Guest/main/myphoto.jpg" alt="Sticker">
-  <div class="hearts-layer" aria-hidden="true"></div>
-
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script>
-    const page1 = document.getElementById('page1');
-    const page2 = document.getElementById('page2');
-    const yesBtn = document.getElementById('yes');
-    const noBtn = document.getElementById('no');
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    const secret = document.getElementById('secret');
-    const sticker = document.getElementById('sticker');
-    const heartsLayer = document.querySelector('.hearts-layer');
-
-    // --- NO BUTTON JUMP ---
-    function moveNo() {
-      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-      noBtn.style.left = Math.random() * maxX + 'px';
-      noBtn.style.top  = Math.random() * maxY + 'px';
-    }
-    noBtn.addEventListener('mouseenter', moveNo);
-    noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNo(); });
-
-    // --- HEART RAIN SYSTEM ---
-    function spawnHeart() {
-      const el = document.createElement('div');
-      el.className = 'heart';
-      el.textContent = ['❤️','💖','💘','💕'][Math.floor(Math.random() * 4)];
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.fontSize = (16 + Math.random() * 30) + 'px';
-      el.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
-      el.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
-      el.style.animation = `heartFloat ${3000 + Math.random() * 3000}ms linear forwards`;
-      heartsLayer.appendChild(el);
-      setTimeout(() => el.remove(), 6000);
-    }
-
-    // --- START ANIMATION ON LOAD ---
-    // This ensures hearts are visible on the first page immediately
-    window.onload = () => {
-        setInterval(spawnHeart, 500); 
-    };
-
-    // --- TRANSITION TO LOVE PAGE ---
-    yesBtn.addEventListener('click', () => {
-      sticker.classList.add('show');
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-
-      setTimeout(() => {
-        sticker.classList.remove('show');
-        page1.style.display = 'none';
-        document.body.style.background = "linear-gradient(180deg, #ff7aa2, #ff9eb8)";
-        page2.style.display = 'block';
-      }, 2000);
-    });
-
-    // --- SURPRISE CLICK ---
-    surpriseBtn.addEventListener('click', () => {
-      secret.style.display = 'block';
-      surpriseBtn.style.display = 'none';
-      // Extra burst of hearts when surprise is clicked
-      for(let i=0; i<20; i++) setTimeout(spawnHeart, i*80);
-    });
-  </script>
-</body>
-</html>
+      100% { transform: translateY(-140vh
