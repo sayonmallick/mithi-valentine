@@ -54,8 +54,6 @@
       font-weight: bold;
       margin-bottom: 30px;
       font-family: 'Courier New', Courier, monospace;
-      color: #ff0000;
-      text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
     }
 
     #surpriseBtn {
@@ -78,7 +76,6 @@
       padding: 25px;
       border-radius: 15px;
       backdrop-filter: blur(10px);
-      color: white;
     }
 
     /* --- FLOATING HEARTS (EVERY PAGE) --- */
@@ -91,29 +88,12 @@
     }
     .heart {
       position: absolute;
-      bottom: -100px;
+      bottom: -60px;
       user-select: none;
-      will-change: transform;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-    }
-    .heart-text {
-      position: absolute;
-      font-family: 'Arial', sans-serif;
-      font-weight: bold;
-      font-size: 10px;
-      color: white;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-      top: 45%;
-      left: 50%;
-      transform: translate(-50%, -50%);
     }
     @keyframes heartFloat {
       0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
+      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -121,6 +101,7 @@
 
   <audio id="loveMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
   </audio>
 
   <div id="page1">
@@ -132,12 +113,13 @@
   </div>
 
   <div id="page2">
-    <h1> ❤️ I Love You  ❤️ </h1>
+    <h1>I Love You</h1>
     
     <button id="surpriseBtn">Surprise Me</button>
 
     <div id="secret">
-      💌 Counting down every moment until you're back in my arms. See you soon, my love. Thinking of you and smiling. 🌸✨
+      💌 You are the most beautiful part of my life.<br>
+      Saying YES made my world brighter 🌸✨
     </div> 
   </div> 
 
@@ -163,58 +145,41 @@
       noBtn.style.top  = Math.random() * maxY + 'px';
     });
 
-    // --- MULTI-COLOR HEARTS WITH "Mithi" ---
+    // --- MULTI-COLOR HEARTS (Blue, Yellow, Red, Green) ---
     function spawnHeart() {
-      const container = document.createElement('div');
-      container.className = 'heart';
+      const el = document.createElement('div');
+      el.className = 'heart';
+      el.textContent = '❤️';
       
-      const coloredHearts = [
-        { char: '💙' }, // Blue
-        { char: '💛' }, // Yellow
-        { char: '❤️' }, // Red
-        { char: '💚' }  // Green
-      ];
+      // COLOR PALETTE
+      const colors = ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']; 
+      el.style.color = colors[Math.floor(Math.random() * colors.length)];
       
-      const choice = coloredHearts[Math.floor(Math.random() * coloredHearts.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.fontSize = (15 + Math.random() * 30) + 'px';
+      el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
       
-      // Heart Emoji
-      const heartEmoji = document.createElement('span');
-      heartEmoji.textContent = choice.char;
-      
-      // Mithi Text
-      const nameText = document.createElement('span');
-      nameText.className = 'heart-text';
-      nameText.textContent = 'Mithi';
-      
-      container.appendChild(heartEmoji);
-      container.appendChild(nameText);
-      
-      const size = (30 + Math.random() * 30); // Increased size for text readability
-      container.style.left = Math.random() * 100 + 'vw';
-      container.style.fontSize = size + 'px';
-      
-      // Scale the name text relative to heart size
-      nameText.style.fontSize = (size * 0.25) + 'px'; 
-      
-      container.style.animation = `heartFloat ${5000 + Math.random() * 4000}ms linear forwards`;
-      
-      heartsLayer.appendChild(container);
-      setTimeout(() => container.remove(), 9000);
+      heartsLayer.appendChild(el);
+      setTimeout(() => el.remove(), 7000);
     }
 
-    setInterval(spawnHeart, 450);
+    // This makes hearts appear on Page 1 AND Page 2
+    setInterval(spawnHeart, 400);
 
     // --- TRANSITION ON YES ---
     yesBtn.addEventListener('click', () => {
-      music.play().catch(e => console.log("Audio play prevented"));
+      // 1. Play Music
+      music.play().catch(e => console.log("Audio play blocked until interaction"));
 
+      // 2. Celebration
       confetti({ 
         particleCount: 150, 
         spread: 70, 
         origin: { y: 0.6 },
-        colors: ['#0000FF', '#FFFF00', '#FF0000', '#008000']
+        colors: ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']
       });
 
+      // 3. Change Background & Page
       setTimeout(() => {
         page1.style.display = 'none';
         body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
@@ -222,6 +187,7 @@
       }, 500);
     });
 
+    // --- SURPRISE BUTTON ---
     surpriseBtn.addEventListener('click', () => {
       secret.style.display = 'block';
       surpriseBtn.style.display = 'none';
