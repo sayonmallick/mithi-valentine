@@ -132,7 +132,7 @@
   </div>
 
   <div id="page2">
-    <h1>I Love You</h1>
+    <h1> ❤️ I Love You  ❤️ </h1>
     
     <button id="surpriseBtn">Surprise Me</button>
 
@@ -143,4 +143,89 @@
 
   <div class="hearts-layer" aria-hidden="true"></div>
 
-  <script src="
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const body = document.body;
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+    const music = document.getElementById('loveMusic');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const secret = document.getElementById('secret');
+    const heartsLayer = document.querySelector('.hearts-layer');
+
+    // --- NO BUTTON JUMP ---
+    noBtn.addEventListener('mouseenter', () => {
+      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+      noBtn.style.left = Math.random() * maxX + 'px';
+      noBtn.style.top  = Math.random() * maxY + 'px';
+    });
+
+    // --- MULTI-COLOR HEARTS WITH "Mithi" ---
+    function spawnHeart() {
+      const container = document.createElement('div');
+      container.className = 'heart';
+      
+      const coloredHearts = [
+        { char: '💙' }, // Blue
+        { char: '💛' }, // Yellow
+        { char: '❤️' }, // Red
+        { char: '💚' }  // Green
+      ];
+      
+      const choice = coloredHearts[Math.floor(Math.random() * coloredHearts.length)];
+      
+      // Heart Emoji
+      const heartEmoji = document.createElement('span');
+      heartEmoji.textContent = choice.char;
+      
+      // Mithi Text
+      const nameText = document.createElement('span');
+      nameText.className = 'heart-text';
+      nameText.textContent = 'Mithi';
+      
+      container.appendChild(heartEmoji);
+      container.appendChild(nameText);
+      
+      const size = (30 + Math.random() * 30); // Increased size for text readability
+      container.style.left = Math.random() * 100 + 'vw';
+      container.style.fontSize = size + 'px';
+      
+      // Scale the name text relative to heart size
+      nameText.style.fontSize = (size * 0.25) + 'px'; 
+      
+      container.style.animation = `heartFloat ${5000 + Math.random() * 4000}ms linear forwards`;
+      
+      heartsLayer.appendChild(container);
+      setTimeout(() => container.remove(), 9000);
+    }
+
+    setInterval(spawnHeart, 450);
+
+    // --- TRANSITION ON YES ---
+    yesBtn.addEventListener('click', () => {
+      music.play().catch(e => console.log("Audio play prevented"));
+
+      confetti({ 
+        particleCount: 150, 
+        spread: 70, 
+        origin: { y: 0.6 },
+        colors: ['#0000FF', '#FFFF00', '#FF0000', '#008000']
+      });
+
+      setTimeout(() => {
+        page1.style.display = 'none';
+        body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
+        page2.style.display = 'block';
+      }, 500);
+    });
+
+    surpriseBtn.addEventListener('click', () => {
+      secret.style.display = 'block';
+      surpriseBtn.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
