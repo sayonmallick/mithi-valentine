@@ -66,6 +66,8 @@
       pointer-events: none;
       transition: opacity 220ms ease, transform 300ms cubic-bezier(.2,.9,.2,1);
       z-index: 9999;
+      background: transparent;
+      display: block;
     }
     #sticker.show {
       opacity: 1;
@@ -83,8 +85,8 @@
     <button id="no" type="button" aria-label="No, I will not be your valentine">No 😜</button>
   </div>
 
-  <!-- Sticker image: replace the file in the repo and update stickerSrc in the script if needed -->
-  <img id="sticker" src="sticker.png" alt="Sticker">
+  <!-- Sticker image: upload your image (e.g. myphoto.jpg) to the repo root and set stickerSrc accordingly -->
+  <img id="sticker" src="myphoto.jpg" alt="Sticker">
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
@@ -93,9 +95,7 @@
     // The URL to open in a new tab on Yes:
     const targetUrl = "https://sayonmallick.github.io/mithi-valentine/";
 
-    // Sticker filename in the repo root (change to your uploaded image filename)
-    // By default it's "sticker.png". To use your own photo, upload e.g. "myphoto.jpg"
-    // to the repo root and set stickerSrc = "myphoto.jpg"
+    // Sticker filename in the repo root (change to your uploaded image filename if needed)
     const stickerSrc = "myphoto.jpg";
 
     // ===== elements =====
@@ -103,8 +103,12 @@
     const yesBtn = document.getElementById("yes");
     const sticker = document.getElementById("sticker");
 
-    // set sticker src (so you can change just the variable)
+    // set sticker src and preload it so it appears instantly
     sticker.src = stickerSrc;
+    const _preloadSticker = new Image();
+    _preloadSticker.src = stickerSrc;
+    // decorative overlay — don't announce to screen readers
+    sticker.setAttribute('aria-hidden', 'true');
 
     // ===== "No" button: move anywhere on viewport, but clicks do nothing =====
     function moveNo() {
@@ -122,11 +126,9 @@
       noBtn.style.top = y + "px";
     }
 
-    // Move on mouse hover
+    // Move on mouse hover and touch (mobile)
     noBtn.addEventListener("pointerenter", moveNo);
-    // Also move on touch (mobile)
     noBtn.addEventListener("touchstart", (e) => {
-      // prevent the touch from immediately triggering a "click"
       e.preventDefault();
       moveNo();
     }, {passive: false});
@@ -135,13 +137,11 @@
     noBtn.addEventListener("click", (e) => {
       e.preventDefault();
       e.stopPropagation();
-      // optional: move again on click to be extra sneaky
       moveNo();
     });
 
-    // Keep keyboard users able to focus (but we won't trigger a "No" action)
+    // Keyboard behaviour: move on Enter/Space but don't navigate away
     noBtn.addEventListener("keydown", (e) => {
-      // If user presses Enter or Space, prevent default to avoid accidental activation
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         moveNo();
@@ -257,22 +257,35 @@
     // ===== show sticker overlay =====
     function showSticker(duration = 3500) {
       if (!sticker) return;
-      // ensure sticker is visible (in case src loads slowly)
       sticker.classList.add('show');
       setTimeout(() => {
         sticker.classList.remove('show');
       }, duration);
     }
 
-    // ===== Yes click: open tab + confetti + sound + sticker =====
+    // ===== Yes click: show sticker + confetti + sound, then open tab =====
     yesBtn.addEventListener("click", () => {
-      // Open new tab first (user gesture)
-      window.open(targetUrl, "_blank", "noopener,noreferrer");
-
-      // Firecracker burst + sound + sticker
+      // show visuals and play sound immediately
+      showSticker(3000);
       firecrackerBurst();
       playFirecrackerSound();
-      showSticker(3800);
+
+      // short delay so the user can see the sticker before the new tab opens
+      const delayMs = 600; // tweak between ~400-800ms if desired
+      let opened = false;
+
+      setTimeout(() => {
+        try {
+          const w = window.open(targetUrl, "_blank", "noopener,noreferrer");
+          opened = !!w;
+        } catch (err) {
+          opened = false;
+        }
+        // fallback: try immediate open if blocked
+        if (!opened) {
+          try { window.open(targetUrl, "_blank", "noopener,noreferrer"); } catch (e) {}
+        }
+      }, delayMs);
     });
   </script>
 
