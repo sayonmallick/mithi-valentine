@@ -1,205 +1,203 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Valentine 💖</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    /* --- SHARED STYLES --- */
-    html, body { height: 100%; margin: 0; padding: 0; }
-    body {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      /* PAGE 1 COLOR: DEEP RED */
-      background-color: #ff0000 !important; 
-      font-family: 'Arial', sans-serif;
-      overflow: hidden;
-      transition: background 1.5s ease;
-      color: white;
-      text-align: center;
-    }
+  <meta charset="UTF-8" />
+  <title>Valentine 💖</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    /* --- SHARED STYLES --- */
+    html, body { height: 100%; margin: 0; padding: 0; }
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      /* PAGE 1 COLOR: DEEP RED */
+      background-color: #ff0000 !important; 
+      font-family: 'Arial', sans-serif;
+      overflow: hidden;
+      transition: background 1.5s ease;
+      color: white;
+      text-align: center;
+    }
 
-    /* --- PAGE 1: PROPOSAL --- */
-    #page1 {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      z-index: 10;
-    }
-    #page1 h1 { font-size: 36px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
-    
-    .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
-    button {
-      padding: 15px 30px;
-      font-size: 18px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-      font-weight: bold;
-    }
-    #yes { background: white; color: #ff0000; } 
-    #no  { background: #333; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
+    /* --- PAGE 1: PROPOSAL --- */
+    #page1 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 10;
+    }
+    #page1 h1 { font-size: 36px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+    
+    .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
+    button {
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    #yes { background: white; color: #ff0000; } 
+    #no  { background: #333; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
 
-    /* --- PAGE 2: LOVE PAGE --- */
-    #page2 {
-      display: none; 
-      z-index: 10;
-      width: 100%;
-    }
-    #page2 h1 {
-      font-size: 52px;
-      font-weight: bold;
-      margin-bottom: 30px;
-      font-family: 'Courier New', Courier, monospace;
-    }
+    /* --- PAGE 2: LOVE PAGE --- */
+    #page2 {
+      display: none; 
+      z-index: 10;
+      width: 100%;
+    }
+    #page2 h1 {
+      font-size: 52px;
+      font-weight: bold;
+      margin-bottom: 30px;
+      font-family: 'Courier New', Courier, monospace;
+    }
 
-    #surpriseBtn {
-      background: #ff4d88;
-      color: white;
-      padding: 14px 45px;
-      font-size: 18px;
-      border-radius: 30px;
-      cursor: pointer;
-      border: none;
-    }
+    #surpriseBtn {
+      background: #ff4d88;
+      color: white;
+      padding: 14px 45px;
+      font-size: 18px;
+      border-radius: 30px;
+      cursor: pointer;
+      border: none;
+    }
 
-    #secret {
-      display: none; 
-      margin: 20px auto;
-      font-size: 22px;
-      max-width: 85%;
-      line-height: 1.6;
-      background: rgba(255, 255, 255, 0.2);
-      padding: 25px;
-      border-radius: 15px;
-      backdrop-filter: blur(10px);
-    }
+    #secret {
+      display: none; 
+      margin: 20px auto;
+      font-size: 22px;
+      max-width: 85%;
+      line-height: 1.6;
+      background: rgba(255, 255, 255, 0.2);
+      padding: 25px;
+      border-radius: 15px;
+      backdrop-filter: blur(10px);
+    }
 
-    /* --- FLOATING HEARTS (EVERY PAGE) --- */
-    .hearts-layer {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 2;
-    }
-    .heart {
-      position: absolute;
-      bottom: -60px;
-      user-select: none;
-      will-change: transform;
-    }
-    @keyframes heartFloat {
-      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
-    }
-  </style>
+    /* --- FLOATING HEARTS (EVERY PAGE) --- */
+    .hearts-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .heart {
+      position: absolute;
+      bottom: -60px;
+      user-select: none;
+      will-change: transform;
+    }
+    @keyframes heartFloat {
+      0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
 </head>
 <body>
 
-  <audio id="loveMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-  </audio>
+  <audio id="loveMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+  </audio>
 
-  <div id="page1">
-    <h1>Will you be my Valentine? 💘</h1>
-    <div class="buttons">
-      <button id="yes" type="button">Yes ❤️</button>
-      <button id="no"  type="button">No 😜</button>
-    </div>
-  </div>
+  <div id="page1">
+    <h1>Will you be my Valentine? 💘</h1>
+    <div class="buttons">
+      <button id="yes" type="button">Yes ❤️</button>
+      <button id="no"  type="button">No 😜</button>
+    </div>
+  </div>
 
-  <div id="page2">
-    <h1>I Love You</h1>
-    
-    <button id="surpriseBtn">Surprise Me</button>
+  <div id="page2">
+    <h1>I Love You</h1>
+    
+    <button id="surpriseBtn">Surprise Me</button>
 
-    <div id="secret">
-      💌  Counting down every moment until you're back in my arms. See you soon, my love. Thinking of you and smiling. 🌸✨
-    </div> 
-  </div> 
+    <div id="secret">
+      💌 You are the most beautiful part of my life.<br>
+      Saying YES made my world brighter 🌸✨
+    </div> 
+  </div> 
 
-  <div class="hearts-layer" aria-hidden="true"></div>
+  <div class="hearts-layer" aria-hidden="true"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-  <script>
-    const body = document.body;
-    const page1 = document.getElementById('page1');
-    const page2 = document.getElementById('page2');
-    const yesBtn = document.getElementById('yes');
-    const noBtn = document.getElementById('no');
-    const music = document.getElementById('loveMusic');
-    const surpriseBtn = document.getElementById('surpriseBtn');
-    const secret = document.getElementById('secret');
-    const heartsLayer = document.querySelector('.hearts-layer');
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script>
+    const body = document.body;
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+    const music = document.getElementById('loveMusic');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const secret = document.getElementById('secret');
+    const heartsLayer = document.querySelector('.hearts-layer');
 
-    // --- NO BUTTON JUMP ---
-    noBtn.addEventListener('mouseenter', () => {
-      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
-      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
-      noBtn.style.left = Math.random() * maxX + 'px';
-      noBtn.style.top  = Math.random() * maxY + 'px';
-    });
+    // --- NO BUTTON JUMP ---
+    noBtn.addEventListener('mouseenter', () => {
+      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+      noBtn.style.left = Math.random() * maxX + 'px';
+      noBtn.style.top  = Math.random() * maxY + 'px';
+    });
 
-    // --- MULTI-COLOR HEARTS (Blue, Yellow, Red, Green) ---
-    function spawnHeart() {
-      const el = document.createElement('div');
-      el.className = 'heart';
-      
-      // Using specific colored heart characters for reliability
-      const coloredHearts = [
-        { char: '💙', color: 'blue' },   // Blue
-        { char: '💛', color: 'yellow' }, // Yellow
-        { char: '❤️', color: 'red' },    // Red
-        { char: '💚', color: 'green' }   // Green
-      ];
-      
-      const choice = coloredHearts[Math.floor(Math.random() * coloredHearts.length)];
-      el.textContent = choice.char;
-      
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.fontSize = (20 + Math.random() * 25) + 'px';
-      el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
-      
-      heartsLayer.appendChild(el);
-      setTimeout(() => el.remove(), 7000);
-    }
+    // --- MULTI-COLOR HEARTS (Blue, Yellow, Red, Green) ---
+    function spawnHeart() {
+      const el = document.createElement('div');
+      el.className = 'heart';
+      
+      // Using specific colored heart characters for reliability
+      const coloredHearts = [
+        { char: '💙', color: 'blue' },   // Blue
+        { char: '💛', color: 'yellow' }, // Yellow
+        { char: '❤️', color: 'red' },    // Red
+        { char: '💚', color: 'green' }   // Green
+      ];
+      
+      const choice = coloredHearts[Math.floor(Math.random() * coloredHearts.length)];
+      el.textContent = choice.char;
+      
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.fontSize = (20 + Math.random() * 25) + 'px';
+      el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
+      
+      heartsLayer.appendChild(el);
+      setTimeout(() => el.remove(), 7000);
+    }
 
-    // This makes hearts appear on BOTH pages immediately
-    setInterval(spawnHeart, 350);
+    // This makes hearts appear on BOTH pages immediately
+    setInterval(spawnHeart, 350);
 
-    // --- TRANSITION ON YES ---
-    yesBtn.addEventListener('click', () => {
-      // Start Music
-      music.play().catch(e => console.log("Audio requires interaction"));
+    // --- TRANSITION ON YES ---
+    yesBtn.addEventListener('click', () => {
+      // Start Music
+      music.play().catch(e => console.log("Audio requires interaction"));
 
-      // Confetti with matching colors
-      confetti({ 
-        particleCount: 150, 
-        spread: 70, 
-        origin: { y: 0.6 },
-        colors: ['#0000FF', '#FFFF00', '#FF0000', '#008000']
-      });
+      // Confetti with matching colors
+      confetti({ 
+        particleCount: 150, 
+        spread: 70, 
+        origin: { y: 0.6 },
+        colors: ['#0000FF', '#FFFF00', '#FF0000', '#008000']
+      });
 
-      // Switch Pages
-      setTimeout(() => {
-        page1.style.display = 'none';
-        body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
-        page2.style.display = 'block';
-      }, 500);
-    });
+      // Switch Pages
+      setTimeout(() => {
+        page1.style.display = 'none';
+        body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
+        page2.style.display = 'block';
+      }, 500);
+    });
 
-    // --- SURPRISE BUTTON ---
-    surpriseBtn.addEventListener('click', () => {
-      secret.style.display = 'block';
-      surpriseBtn.style.display = 'none';
-    });
-  </script>
+    // --- SURPRISE BUTTON ---
+    surpriseBtn.addEventListener('click', () => {
+      secret.style.display = 'block';
+      surpriseBtn.style.display = 'none';
+    });
+  </script>
 </body>
 </html>
-
-
-
