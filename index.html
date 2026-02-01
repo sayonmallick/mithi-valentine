@@ -13,11 +13,11 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      /* FORCED RED FOR FIRST PAGE */
-      background: #ff0000 !important; 
+      /* PAGE 1 COLOR: DEEP RED */
+      background-color: #ff0000 !important; 
       font-family: 'Arial', sans-serif;
       overflow: hidden;
-      transition: background 1s ease;
+      transition: background 1.5s ease;
       color: white;
       text-align: center;
     }
@@ -29,6 +29,8 @@
       align-items: center;
       z-index: 10;
     }
+    #page1 h1 { font-size: 36px; text-shadow: 2px 2px 10px rgba(0,0,0,0.3); }
+    
     .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
     button {
       padding: 15px 30px;
@@ -51,7 +53,6 @@
       font-size: 52px;
       font-weight: bold;
       margin-bottom: 30px;
-      color: white;
       font-family: 'Courier New', Courier, monospace;
     }
 
@@ -63,22 +64,21 @@
       border-radius: 30px;
       cursor: pointer;
       border: none;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     #secret {
       display: none; 
       margin: 20px auto;
-      font-size: 20px;
+      font-size: 22px;
       max-width: 85%;
       line-height: 1.6;
       background: rgba(255, 255, 255, 0.2);
-      padding: 20px;
+      padding: 25px;
       border-radius: 15px;
       backdrop-filter: blur(10px);
     }
 
-    /* --- FLOATING HEARTS (Blue, Yellow, Red, Green) --- */
+    /* --- FLOATING HEARTS (EVERY PAGE) --- */
     .hearts-layer {
       position: fixed;
       inset: 0;
@@ -98,6 +98,11 @@
   </style>
 </head>
 <body>
+
+  <audio id="loveMusic" loop>
+    <source src="music.mp3" type="audio/mpeg">
+    Your browser does not support the audio element.
+  </audio>
 
   <div id="page1">
     <h1>Will you be my Valentine? 💘</h1>
@@ -127,6 +132,7 @@
     const page2 = document.getElementById('page2');
     const yesBtn = document.getElementById('yes');
     const noBtn = document.getElementById('no');
+    const music = document.getElementById('loveMusic');
     const surpriseBtn = document.getElementById('surpriseBtn');
     const secret = document.getElementById('secret');
     const heartsLayer = document.querySelector('.hearts-layer');
@@ -139,13 +145,14 @@
       noBtn.style.top  = Math.random() * maxY + 'px';
     });
 
-    // --- BLUE, YELLOW, RED, GREEN HEARTS ---
+    // --- MULTI-COLOR HEARTS (Blue, Yellow, Red, Green) ---
     function spawnHeart() {
       const el = document.createElement('div');
       el.className = 'heart';
       el.textContent = '❤️';
       
-      const colors = ['#00a2ff', '#ffff00', '#ff0000', '#00ff00']; // Blue, Yellow, Red, Green
+      // COLOR PALETTE
+      const colors = ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']; 
       el.style.color = colors[Math.floor(Math.random() * colors.length)];
       
       el.style.left = Math.random() * 100 + 'vw';
@@ -156,27 +163,31 @@
       setTimeout(() => el.remove(), 7000);
     }
 
-    // Start colored hearts immediately
-    setInterval(spawnHeart, 450);
+    // This makes hearts appear on Page 1 AND Page 2
+    setInterval(spawnHeart, 400);
 
-    // --- TRANSITION ---
+    // --- TRANSITION ON YES ---
     yesBtn.addEventListener('click', () => {
+      // 1. Play Music
+      music.play().catch(e => console.log("Audio play blocked until interaction"));
+
+      // 2. Celebration
       confetti({ 
         particleCount: 150, 
         spread: 70, 
         origin: { y: 0.6 },
-        colors: ['#00a2ff', '#ffff00', '#ff0000', '#00ff00']
+        colors: ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']
       });
 
+      // 3. Change Background & Page
       setTimeout(() => {
         page1.style.display = 'none';
-        // Background changes to Pink Gradient for Page 2
         body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
         page2.style.display = 'block';
       }, 500);
     });
 
-    // --- REVEAL MESSAGE ---
+    // --- SURPRISE BUTTON ---
     surpriseBtn.addEventListener('click', () => {
       secret.style.display = 'block';
       surpriseBtn.style.display = 'none';
