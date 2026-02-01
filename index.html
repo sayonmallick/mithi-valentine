@@ -13,8 +13,8 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      /* FORCED RED FOR FIRST PAGE */
-      background-color: #e60026 !important; 
+      /* PAGE 1 COLOR: RED */
+      background-color: #ff0000 !important; 
       font-family: 'Arial', sans-serif;
       overflow: hidden;
       transition: background 1.5s ease;
@@ -30,7 +30,7 @@
       z-index: 10;
     }
     #page1 h1 {
-        font-size: 32px;
+        font-size: 36px;
         text-shadow: 2px 2px 10px rgba(0,0,0,0.3);
     }
     .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
@@ -42,7 +42,7 @@
       cursor: pointer;
       font-weight: bold;
     }
-    #yes { background: white; color: #e60026; } 
+    #yes { background: white; color: #ff0000; } 
     #no  { background: #333; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
 
     /* --- PAGE 2: LOVE PAGE --- */
@@ -54,16 +54,10 @@
     #page2 h1 {
       font-size: 52px;
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       color: white;
       text-shadow: 2px 2px 15px rgba(0,0,0,0.2);
       font-family: 'Courier New', Courier, monospace;
-    }
-
-    /* Ribbon / Swash Style */
-    .ribbon-container {
-      margin: 10px auto 30px auto;
-      width: 300px;
     }
 
     #surpriseBtn {
@@ -78,7 +72,6 @@
       margin-bottom: 20px;
       transition: transform 0.2s;
     }
-    #surpriseBtn:hover { transform: scale(1.05); }
 
     #secret {
       display: none; 
@@ -99,22 +92,7 @@
       to { opacity: 1; }
     }
 
-    /* --- EFFECTS --- */
-    #sticker {
-      position: fixed;
-      left: 50%;
-      top: 45%;
-      transform: translate(-50%, -50%) scale(0.9);
-      max-width: 60%;
-      border-radius: 15px;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.4);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease, transform 0.4s cubic-bezier(.17,.67,.83,.67);
-      z-index: 9999;
-    }
-    #sticker.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-
+    /* --- FLOATING HEARTS LAYER --- */
     .hearts-layer {
       position: fixed;
       inset: 0;
@@ -146,14 +124,6 @@
   <div id="page2">
     <h1>I Love You</h1>
     
-    <div class="ribbon-container">
-        <svg viewBox="0 0 500 100" xmlns="http://www.w3.org/2000/svg">
-            <path d="M50,50 Q150,20 250,50 T450,50" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" />
-            <path d="M230,50 Q250,20 270,50 Q250,80 230,50" fill="white" />
-            <path d="M210,50 C210,30 240,30 250,50 C260,30 290,30 290,50 C290,75 250,90 250,90 C250,90 210,75 210,50" fill="none" stroke="white" stroke-width="2" />
-        </svg>
-    </div>
-
     <button id="surpriseBtn">Surprise Me</button>
 
     <div id="secret">
@@ -161,7 +131,6 @@
     </div> 
   </div> 
 
-  <img id="sticker" src="https://raw.githubusercontent.com/sayonmallick/Guest/main/myphoto.jpg" alt="Sticker">
   <div class="hearts-layer" aria-hidden="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
@@ -173,7 +142,6 @@
     const noBtn = document.getElementById('no');
     const surpriseBtn = document.getElementById('surpriseBtn');
     const secret = document.getElementById('secret');
-    const sticker = document.getElementById('sticker');
     const heartsLayer = document.querySelector('.hearts-layer');
 
     // --- NO BUTTON JUMP ---
@@ -184,39 +152,44 @@
       noBtn.style.top  = Math.random() * maxY + 'px';
     });
 
-    // --- HEART RAIN ---
+    // --- MULTI-COLOR HEART RAIN ---
     function spawnHeart() {
       const el = document.createElement('div');
       el.className = 'heart';
-      el.textContent = ['❤️','💖','💕','💗'][Math.floor(Math.random() * 4)];
+      el.textContent = '❤️';
+      
+      // COLORS: RED, YELLOW, PINK, BLUE
+      const colors = ['#ff0000', '#ffff00', '#ff69b4', '#0000ff'];
+      el.style.color = colors[Math.floor(Math.random() * colors.length)];
+      
       el.style.left = Math.random() * 100 + 'vw';
       el.style.fontSize = (15 + Math.random() * 25) + 'px';
       el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
+      
       heartsLayer.appendChild(el);
       setTimeout(() => el.remove(), 7000);
     }
 
-    // Start hearts immediately (Page 1)
-    setInterval(spawnHeart, 600);
+    // Start hearts immediately
+    setInterval(spawnHeart, 500);
 
     // --- TRANSITION ---
     yesBtn.addEventListener('click', () => {
-      sticker.classList.add('show');
+      // Confetti burst
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
 
       setTimeout(() => {
-        sticker.classList.remove('show');
         page1.style.display = 'none';
-        // Smooth transition to the Love Page Gradient
+        // Transition to Page 2 Gradient
         body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
         page2.style.display = 'block';
-      }, 2000);
+      }, 800); // Shorter delay since image is gone
     });
 
     surpriseBtn.addEventListener('click', () => {
       secret.style.display = 'block';
       surpriseBtn.style.display = 'none';
-      confetti({ particleCount: 50, scalar: 2 });
+      confetti({ particleCount: 40, colors: ['#ff0000', '#ffff00', '#ff69b4', '#0000ff'] });
     });
   </script>
 </body>
