@@ -17,7 +17,18 @@
       overflow: hidden;
     }
     h1 { color: #d1004f; margin-bottom: 40px; text-align: center; }
-    .buttons { display: flex; align-items: center; gap: 20px; }
+
+    /* IMPORTANT: keep .buttons positioned relative so the "No" button
+       can move inside this container (restores the original dodging). */
+    .buttons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      position: relative;
+      width: 360px; /* keeps an area for dodging; adjust as you like */
+      justify-content: center;
+    }
+
     button {
       padding: 15px 30px;
       font-size: 18px;
@@ -25,18 +36,23 @@
       border: none;
       cursor: pointer;
     }
+
     #yes {
       background: #ff2f6d;
       color: white;
     }
+
+    /* restore absolute positioning inside .buttons so it moves as before */
     #no {
       background: #555;
       color: white;
-      position: fixed;
-      transition: left 180ms ease, top 180ms ease;
+      position: absolute;
+      /* initial placement near the right of the container */
       left: calc(50% + 120px);
       top: calc(50% + 40px);
+      transition: left 140ms ease, top 140ms ease;
     }
+
     button:focus {
       outline: 3px solid rgba(209,0,79,0.25);
       outline-offset: 4px;
@@ -56,15 +72,156 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <script>
-    // ===== configuration =====
     const targetUrl = "https://sayonmallick.github.io/mithi-valentine/";
-
-    // ===== elements =====
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
+    const buttonsContainer = document.querySelector('.buttons');
 
-    // ===== no button dodge logic =====
+    // Move the "No" button within the .buttons container (restores original behavior)
     function moveNo() {
-      const padding = 16;
+      const padding = 8;
+      const containerRect = buttonsContainer.getBoundingClientRect();
       const btnWidth = noBtn.offsetWidth || 100;
-     
+      const btnHeight = noBtn.offsetHeight || 40;
+
+      const maxX = Math.max(containerRect.width - btnWidth - padding, padding);
+      const maxY = Math.max(containerRect.height - btnHeight - padding, padding);
+
+      const x = Math.random() * (maxX - padding) + padding;
+      const y = Math.random() * (maxY - padding) + padding;
+
+      // position is relative to .buttons container because #no is absolute
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    // restore the interactive handlers (pointerenter + click + touch)
+    noBtn.addEventListener("pointerenter", moveNo);
+    noBtn.addEventListener("click", moveNo);
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNo();
+    }, {passive: false});
+    noBtn.addEventListener("focus", () => {}); // don't dodge keyboard users
+
+    // confetti bursts remain the same
+    function firecrackerBurst() {
+      if (typeof confetti !== "function") return;
+      const colors = [
+        ['#ff2f6d', '#ffd700', '#ff7f50'],
+        ['#ffb3c6', '#ffffff', '#ffd700'],
+        ['#00aaff', '#a0e9ff', '#ffffff'],
+      ];
+      const bursts = [
+        { delay:   0, particleCount: 70, spread: 30, startVelocity: 80 },
+        { delay: 120, particleCount: 60, spread: 45, startVelocity: 60 },
+        { delay: 240, particleCount: 80, spread: 60, startVelocity: 90 },
+        { delay: 360, particleCount: 100, spread: 100, startVelocity: 40 },
+      ];
+      bursts.forEach((b, i) => {
+        setTimeout(() => {
+          confetti({
+            particleCount: b.particleCount,
+            angle: 90,
+            spread: b.spread,
+            startVelocity: b.startVelocity,
+            ticks: 200,
+            origin: { x: 0.5 + (Math.random() - 0.5) * 0.2, y: 0.25 + (Math.random() - 0.2) * 0.2 },
+            colors: colors[i % colors.length],
+            scalar: 1 + Math.random() * 0.3,
+          });
+        }, b.delay);
+      });
+      setTimeout(() => {
+        confetti({
+          particleCount: 180,
+          spread: 160,
+          startVelocity: 30,
+          ticks: 220,
+          origin: { x: 0.5, y: 0.4 },
+          colors: ['#ff2f6d', '#ffd700', '#fff', '#ff7f50', '#00aaff'],
+        });
+      }, 520);
+    }
+
+    // synthesized firecracker sound (unchanged)
+    let audioCtx = null;
+    function playFirecrackerSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const ctx = audioCtx;
+        const master = ctx.createGain();
+        master.gain.value = 0.9;
+        master.connect(ctx.destination);
+
+        const bufferSize = ctx.sampleRate * 0.2;
+        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+        const data = noiseBuffer.getChannelData(0);
+        for (let i = 0; i < bufferSize; i++) {
+          data[i] = (Math.random() * 2 - 1) * Math.exp(-3 * i / bufferSize);
+        }
+        const noise = ctx.createBufferSource();
+        noise.buffer = noiseBuffer;
+        const noiseFilter = ctx.createBiquadFilter();
+        noiseFilter.type = 'highpass';
+        noiseFilter.frequency.value = 900;
+        noise.connect(noiseFilter);
+        noiseFilter.connect(master);
+
+        const osc = ctx.createOscillator();
+        const oscGain = ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.value = 1200;
+        oscGain.gain.value = 0.0001;
+        osc.connect(oscGain);
+        oscGain.connect(master);
+
+        const now = ctx.currentTime;
+        noise.start(now);
+        noise.stop(now + 0.18);
+
+        osc.start(now);
+        osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+        oscGain.gain.setValueAtTime(0.0001, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.6, now + 0.005);
+        oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
+        osc.stop(now + 0.14);
+      } catch (err) {
+        console.warn('Audio not available:', err);
+      }
+    }
+
+    // "Yes" click: open new tab, play confetti + sound (unchanged)
+    yesBtn.addEventListener("click", () => {
+      window.open(targetUrl, "_blank", "noopener,noreferrer");
+      firecrackerBurst();
+      playFirecrackerSound();
+    });
+
+    // initial placement of the No button inside the container (center-right)
+    window.addEventListener('load', () => {
+      // place it relative to the container size
+      const cW = buttonsContainer.clientWidth;
+      const cH = buttonsContainer.clientHeight || 60;
+      const left = Math.min(cW - noBtn.offsetWidth - 8, cW * 0.75);
+      const top = Math.min(cH - noBtn.offsetHeight - 8, cH * 0.3);
+      noBtn.style.left = (left > 0 ? left : 140) + 'px';
+      noBtn.style.top = (top > 0 ? top : 8) + 'px';
+    });
+
+    // keep No button inside container on resize
+    window.addEventListener('resize', () => {
+      const padding = 8;
+      const cW = buttonsContainer.clientWidth;
+      const cH = buttonsContainer.clientHeight || 60;
+      const left = parseFloat(getComputedStyle(noBtn).left) || 0;
+      const top = parseFloat(getComputedStyle(noBtn).top) || 0;
+      const maxLeft = Math.max(cW - noBtn.offsetWidth - padding, padding);
+      const maxTop = Math.max(cH - noBtn.offsetHeight - padding, padding);
+      if (left > maxLeft) noBtn.style.left = maxLeft + 'px';
+      if (top > maxTop) noBtn.style.top = maxTop + 'px';
+    });
+  </script>
+
+</body>
+</html>
