@@ -54,6 +54,9 @@
       font-weight: bold;
       margin-bottom: 30px;
       font-family: 'Courier New', Courier, monospace;
+      /* UPDATED: Changed text color to Red */
+      color: #ff0000;
+      text-shadow: 2px 2px 5px rgba(255, 255, 255, 0.5);
     }
 
     #surpriseBtn {
@@ -76,6 +79,7 @@
       padding: 25px;
       border-radius: 15px;
       backdrop-filter: blur(10px);
+      color: white; /* Keeps message text white for readability */
     }
 
     /* --- FLOATING HEARTS (EVERY PAGE) --- */
@@ -90,10 +94,11 @@
       position: absolute;
       bottom: -60px;
       user-select: none;
+      will-change: transform;
     }
     @keyframes heartFloat {
       0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
+      100% { transform: translateY(-125vh) rotate(360deg); opacity: 0; }
     }
   </style>
 </head>
@@ -101,7 +106,6 @@
 
   <audio id="loveMusic" loop>
     <source src="music.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
   </audio>
 
   <div id="page1">
@@ -118,8 +122,7 @@
     <button id="surpriseBtn">Surprise Me</button>
 
     <div id="secret">
-      💌 You are the most beautiful part of my life.<br>
-      Saying YES made my world brighter 🌸✨
+      💌 Counting down every moment until you're back in my arms. See you soon, my love. Thinking of you and smiling. 🌸✨
     </div> 
   </div> 
 
@@ -149,37 +152,42 @@
     function spawnHeart() {
       const el = document.createElement('div');
       el.className = 'heart';
-      el.textContent = '❤️';
       
-      // COLOR PALETTE
-      const colors = ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']; 
-      el.style.color = colors[Math.floor(Math.random() * colors.length)];
+      const coloredHearts = [
+        { char: '💙' }, // Blue
+        { char: '💛' }, // Yellow
+        { char: '❤️' }, // Red
+        { char: '💚' }  // Green
+      ];
+      
+      const choice = coloredHearts[Math.floor(Math.random() * coloredHearts.length)];
+      el.textContent = choice.char;
       
       el.style.left = Math.random() * 100 + 'vw';
-      el.style.fontSize = (15 + Math.random() * 30) + 'px';
+      el.style.fontSize = (20 + Math.random() * 25) + 'px';
       el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
       
       heartsLayer.appendChild(el);
       setTimeout(() => el.remove(), 7000);
     }
 
-    // This makes hearts appear on Page 1 AND Page 2
-    setInterval(spawnHeart, 400);
+    // Hearts appear on BOTH pages immediately
+    setInterval(spawnHeart, 350);
 
     // --- TRANSITION ON YES ---
     yesBtn.addEventListener('click', () => {
-      // 1. Play Music
-      music.play().catch(e => console.log("Audio play blocked until interaction"));
+      // Start Music (requires user interaction like this click)
+      music.play().catch(e => console.log("Audio play prevented"));
 
-      // 2. Celebration
+      // Confetti burst
       confetti({ 
         particleCount: 150, 
         spread: 70, 
         origin: { y: 0.6 },
-        colors: ['#00d4ff', '#ffff00', '#ff0000', '#22ff00']
+        colors: ['#0000FF', '#FFFF00', '#FF0000', '#008000']
       });
 
-      // 3. Change Background & Page
+      // Switch to Page 2
       setTimeout(() => {
         page1.style.display = 'none';
         body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
