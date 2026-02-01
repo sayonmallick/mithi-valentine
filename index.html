@@ -1,58 +1,101 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Valentine 💖</title>
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
-    html, body { height: 100%; margin: 0; }
+    /* --- SHARED STYLES --- */
+    html, body { height: 100%; margin: 0; padding: 0; }
     body {
       height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: #ffe6ec;
-      font-family: Arial, sans-serif;
+      background: #ffe6ec; 
+      font-family: 'Arial', sans-serif;
       overflow: hidden;
+      transition: background 1.5s ease;
+      color: #d1004f;
+      text-align: center;
     }
-    h1 { color: #d1004f; margin-bottom: 40px; text-align: center; }
 
-    .buttons {
+    /* --- PAGE 1: PROPOSAL --- */
+    #page1 {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 20px;
+      z-index: 10;
     }
-
+    .buttons { display: flex; align-items: center; gap: 20px; position: relative; margin-top: 20px; }
     button {
       padding: 15px 30px;
       font-size: 18px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
+      font-weight: bold;
     }
+    #yes { background: #ff2f6d; color: white; }
+    #no  { background: #555; color: white; position: fixed; transition: left 140ms ease, top 140ms ease; left: 60%; top: 50%; }
 
-    #yes {
-      background: #ff2f6d;
+    /* --- PAGE 2: LOVE PAGE --- */
+    #page2 {
+      display: none; 
+      z-index: 10;
+      width: 100%;
+    }
+    #page2 h1 {
+      font-size: 48px;
+      font-weight: bold;
+      margin-bottom: 20px;
       color: white;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+      font-family: 'Courier New', Courier, monospace;
     }
 
-    /* "No" floats across the whole viewport */
-    #no {
-      background: #555;
+    #surpriseBtn {
+      background: #ff5e99;
       color: white;
-      position: fixed;
-      transition: left 140ms ease, top 140ms ease;
-      left: 60%;
-      top: 50%;
+      padding: 14px 45px;
+      font-size: 18px;
+      border-radius: 30px;
+      box-shadow: 0 4px 15px rgba(255, 94, 153, 0.4);
+      cursor: pointer;
+      border: none;
+      margin-bottom: 20px;
+      transition: transform 0.2s;
     }
 
-    button:focus {
-      outline: 3px solid rgba(209,0,79,0.25);
-      outline-offset: 4px;
+    /* Heart Line Sign Style */
+    .heart-divider {
+      width: 320px;
+      height: auto;
+      margin: 10px auto;
+      display: block;
     }
 
-    /* sticker/overlay shown after "Yes" */
+    #secret {
+      display: none; 
+      margin: 20px auto;
+      font-size: 22px;
+      max-width: 85%;
+      line-height: 1.6;
+      color: white;
+      background: rgba(255, 255, 255, 0.25);
+      padding: 25px;
+      border-radius: 20px;
+      backdrop-filter: blur(10px);
+      animation: fadeIn 0.8s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* --- EFFECTS --- */
     #sticker {
       position: fixed;
       left: 50%;
@@ -66,228 +109,119 @@
       pointer-events: none;
       transition: opacity 220ms ease, transform 300ms cubic-bezier(.2,.9,.2,1);
       z-index: 9999;
-      background: transparent;
-      display: block;
     }
-    #sticker.show {
-      opacity: 1;
-      transform: translate(-50%, -50%) scale(1);
+    #sticker.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+    .hearts-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 2;
+    }
+    .heart {
+      position: absolute;
+      bottom: -60px;
+      user-select: none;
+      will-change: transform, opacity;
+    }
+    @keyframes heartFloat {
+      0%   { transform: translateY(0) translateX(0) scale(0.85) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(-140vh) translateX(var(--dx, 0px)) scale(1.05) rotate(var(--rot, 0deg)); opacity: 0; }
     }
   </style>
 </head>
-
 <body>
 
-  <h1>Will you be my Valentine? 💘</h1>
-
-  <div class="buttons">
-    <button id="yes" type="button" aria-label="Yes — open link in new tab">Yes ❤️</button>
-    <button id="no" type="button" aria-label="No, I will not be your valentine">No 😜</button>
+  <div id="page1">
+    <h1>Will you be my Valentine? 💘</h1>
+    <div class="buttons">
+      <button id="yes" type="button">Yes ❤️</button>
+      <button id="no"  type="button">No 😜</button>
+    </div>
   </div>
 
-  <!-- Sticker image: upload your image (e.g. myphoto.jpg) to the repo root and set stickerSrc accordingly -->
-  <img id="sticker" src="myphoto.jpg" alt="Sticker">
+  <div id="page2">
+    <h1>I Love You</h1>
+  
+    
+    <button id="surpriseBtn">Surprise Me</button>
+
+    <div id="secret">
+      💌 Counting down every moment until you're back in my arms. See you soon, my love 🌸✨
+    </div> 
+
+    <svg class="heart-divider" viewBox="0 0 400 100" xmlns="http://www.w3.org/2000/svg">
+        <path d="M50 50 C 120 50, 150 10, 180 50 C 210 90, 240 50, 350 50" stroke="white" stroke-width="3" fill="transparent" stroke-linecap="round"/>
+        <path d="M165 50 C 165 30, 200 30, 200 50 C 200 70, 165 70, 165 50" stroke="white" stroke-width="3" fill="transparent"/>
+        <path d="M182 50 C 182 35, 210 35, 210 50 C 210 65, 182 65, 182 50" stroke="white" stroke-width="3" fill="transparent"/>
+    </svg>
+  </div> 
+
+  <img id="sticker" src="https://raw.githubusercontent.com/sayonmallick/Guest/main/myphoto.jpg" alt="Sticker">
+  <div class="hearts-layer" aria-hidden="true"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
   <script>
-    // ===== config =====
-    // The URL to open in a new tab on Yes:
-    const targetUrl = "https://sayonmallick.github.io/mithi-valentine/";
+    const page1 = document.getElementById('page1');
+    const page2 = document.getElementById('page2');
+    const yesBtn = document.getElementById('yes');
+    const noBtn = document.getElementById('no');
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const secret = document.getElementById('secret');
+    const sticker = document.getElementById('sticker');
+    const heartsLayer = document.querySelector('.hearts-layer');
 
-    // Sticker filename in the repo root (change to your uploaded image filename if needed)
-    const stickerSrc = "myphoto.jpg";
-
-    // ===== elements =====
-    const noBtn = document.getElementById("no");
-    const yesBtn = document.getElementById("yes");
-    const sticker = document.getElementById("sticker");
-
-    // set sticker src and preload it so it appears instantly
-    sticker.src = stickerSrc;
-    const _preloadSticker = new Image();
-    _preloadSticker.src = stickerSrc;
-    // decorative overlay — don't announce to screen readers
-    sticker.setAttribute('aria-hidden', 'true');
-
-    // ===== "No" button: move anywhere on viewport, but clicks do nothing =====
+    // --- NO BUTTON JUMP ---
     function moveNo() {
-      const padding = 12;
-      const btnWidth = noBtn.offsetWidth || 100;
-      const btnHeight = noBtn.offsetHeight || 40;
+      const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+      const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+      noBtn.style.left = Math.random() * maxX + 'px';
+      noBtn.style.top  = Math.random() * maxY + 'px';
+    }
+    noBtn.addEventListener('mouseenter', moveNo);
+    noBtn.addEventListener('click', (e) => { e.preventDefault(); moveNo(); });
 
-      const maxX = Math.max(window.innerWidth - btnWidth - padding, padding);
-      const maxY = Math.max(window.innerHeight - btnHeight - padding, padding);
-
-      const x = Math.random() * (maxX - padding) + padding;
-      const y = Math.random() * (maxY - padding) + padding;
-
-      noBtn.style.left = x + "px";
-      noBtn.style.top = y + "px";
+    // --- HEART RAIN SYSTEM ---
+    function spawnHeart() {
+      const el = document.createElement('div');
+      el.className = 'heart';
+      el.textContent = ['❤️','💖','💘','💕'][Math.floor(Math.random() * 4)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.fontSize = (16 + Math.random() * 30) + 'px';
+      el.style.setProperty('--dx', (Math.random() * 120 - 60) + 'px');
+      el.style.setProperty('--rot', (Math.random() * 80 - 40) + 'deg');
+      el.style.animation = `heartFloat ${3000 + Math.random() * 3000}ms linear forwards`;
+      heartsLayer.appendChild(el);
+      setTimeout(() => el.remove(), 6000);
     }
 
-    // Move on mouse hover and touch (mobile)
-    noBtn.addEventListener("pointerenter", moveNo);
-    noBtn.addEventListener("touchstart", (e) => {
-      e.preventDefault();
-      moveNo();
-    }, {passive: false});
+    // --- START ANIMATION ON LOAD ---
+    // This ensures hearts are visible on the first page immediately
+    window.onload = () => {
+        setInterval(spawnHeart, 500); 
+    };
 
-    // Make clicks on "No" do nothing (so it's effectively not clickable)
-    noBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      moveNo();
-    });
-
-    // Keyboard behaviour: move on Enter/Space but don't navigate away
-    noBtn.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        moveNo();
-      }
-    });
-
-    // Initial placement (center-right-ish)
-    window.addEventListener('load', () => {
-      const left = Math.min(window.innerWidth - noBtn.offsetWidth - 24, window.innerWidth * 0.7);
-      const top = Math.min(window.innerHeight - noBtn.offsetHeight - 24, window.innerHeight * 0.45);
-      noBtn.style.left = (left || 300) + 'px';
-      noBtn.style.top = (top || 200) + 'px';
-    });
-
-    // Keep it inside viewport on resize
-    window.addEventListener('resize', () => {
-      const padding = 12;
-      const left = parseFloat(getComputedStyle(noBtn).left) || 0;
-      const top = parseFloat(getComputedStyle(noBtn).top) || 0;
-      const maxLeft = Math.max(window.innerWidth - noBtn.offsetWidth - padding, padding);
-      const maxTop = Math.max(window.innerHeight - noBtn.offsetHeight - padding, padding);
-      if (left > maxLeft) noBtn.style.left = maxLeft + 'px';
-      if (top > maxTop) noBtn.style.top = maxTop + 'px';
-    });
-
-    // ===== confetti (firecracker bursts) =====
-    function firecrackerBurst() {
-      if (typeof confetti !== "function") return;
-      const colors = [
-        ['#ff2f6d', '#ffd700', '#ff7f50'],
-        ['#ffb3c6', '#ffffff', '#ffd700'],
-        ['#00aaff', '#a0e9ff', '#ffffff'],
-      ];
-      const bursts = [
-        { delay:   0, particleCount: 70, spread: 30, startVelocity: 80 },
-        { delay: 120, particleCount: 60, spread: 45, startVelocity: 60 },
-        { delay: 240, particleCount: 80, spread: 60, startVelocity: 90 },
-        { delay: 360, particleCount: 100, spread: 100, startVelocity: 40 },
-      ];
-      bursts.forEach((b, i) => {
-        setTimeout(() => {
-          confetti({
-            particleCount: b.particleCount,
-            angle: 90,
-            spread: b.spread,
-            startVelocity: b.startVelocity,
-            ticks: 200,
-            origin: { x: 0.5 + (Math.random() - 0.5) * 0.2, y: 0.25 + (Math.random() - 0.2) * 0.2 },
-            colors: colors[i % colors.length],
-            scalar: 1 + Math.random() * 0.3,
-          });
-        }, b.delay);
-      });
-      setTimeout(() => {
-        confetti({
-          particleCount: 180,
-          spread: 160,
-          startVelocity: 30,
-          ticks: 220,
-          origin: { x: 0.5, y: 0.4 },
-          colors: ['#ff2f6d', '#ffd700', '#fff', '#ff7f50', '#00aaff'],
-        });
-      }, 520);
-    }
-
-    // ===== sound (WebAudio) =====
-    let audioCtx = null;
-    function playFirecrackerSound() {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const ctx = audioCtx;
-        const master = ctx.createGain();
-        master.gain.value = 0.9;
-        master.connect(ctx.destination);
-
-        const bufferSize = ctx.sampleRate * 0.2;
-        const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
-        const data = noiseBuffer.getChannelData(0);
-        for (let i = 0; i < bufferSize; i++) {
-          data[i] = (Math.random() * 2 - 1) * Math.exp(-3 * i / bufferSize);
-        }
-        const noise = ctx.createBufferSource();
-        noise.buffer = noiseBuffer;
-        const noiseFilter = ctx.createBiquadFilter();
-        noiseFilter.type = 'highpass';
-        noiseFilter.frequency.value = 900;
-        noise.connect(noiseFilter);
-        noiseFilter.connect(master);
-
-        const osc = ctx.createOscillator();
-        const oscGain = ctx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.value = 1200;
-        oscGain.gain.value = 0.0001;
-        osc.connect(oscGain);
-        oscGain.connect(master);
-
-        const now = ctx.currentTime;
-        noise.start(now);
-        noise.stop(now + 0.18);
-
-        osc.start(now);
-        osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
-        oscGain.gain.setValueAtTime(0.0001, now);
-        oscGain.gain.exponentialRampToValueAtTime(0.6, now + 0.005);
-        oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.12);
-        osc.stop(now + 0.14);
-      } catch (err) {
-        console.warn('Audio not available:', err);
-      }
-    }
-
-    // ===== show sticker overlay =====
-    function showSticker(duration = 3500) {
-      if (!sticker) return;
+    // --- TRANSITION TO LOVE PAGE ---
+    yesBtn.addEventListener('click', () => {
       sticker.classList.add('show');
+      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+
       setTimeout(() => {
         sticker.classList.remove('show');
-      }, duration);
-    }
+        page1.style.display = 'none';
+        document.body.style.background = "linear-gradient(180deg, #ff7aa2, #ff9eb8)";
+        page2.style.display = 'block';
+      }, 2000);
+    });
 
-    // ===== Yes click: show sticker + confetti + sound, then open tab =====
-    yesBtn.addEventListener("click", () => {
-      // show visuals and play sound immediately
-      showSticker(3000);
-      firecrackerBurst();
-      playFirecrackerSound();
-
-      // short delay so the user can see the sticker before the new tab opens
-      const delayMs = 600; // tweak between ~400-800ms if desired
-      let opened = false;
-
-      setTimeout(() => {
-        try {
-          const w = window.open(targetUrl, "_blank", "noopener,noreferrer");
-          opened = !!w;
-        } catch (err) {
-          opened = false;
-        }
-        // fallback: try immediate open if blocked
-        if (!opened) {
-          try { window.open(targetUrl, "_blank", "noopener,noreferrer"); } catch (e) {}
-        }
-      }, delayMs);
+    // --- SURPRISE CLICK ---
+    surpriseBtn.addEventListener('click', () => {
+      secret.style.display = 'block';
+      surpriseBtn.style.display = 'none';
+      // Extra burst of hearts when surprise is clicked
+      for(let i=0; i<20; i++) setTimeout(spawnHeart, i*80);
     });
   </script>
-
 </body>
 </html>
