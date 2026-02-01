@@ -13,7 +13,7 @@
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      /* FORCED SOLID RED BACKGROUND FOR FIRST PAGE */
+      /* FORCED RED FOR FIRST PAGE */
       background: #ff0000 !important; 
       font-family: 'Arial', sans-serif;
       overflow: hidden;
@@ -63,13 +63,14 @@
       border-radius: 30px;
       cursor: pointer;
       border: none;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     }
 
     #secret {
       display: none; 
       margin: 20px auto;
       font-size: 20px;
-      max-width: 80%;
+      max-width: 85%;
       line-height: 1.6;
       background: rgba(255, 255, 255, 0.2);
       padding: 20px;
@@ -77,7 +78,7 @@
       backdrop-filter: blur(10px);
     }
 
-    /* --- MULTI-COLOR HEARTS --- */
+    /* --- FLOATING HEARTS (Blue, Yellow, Red, Green) --- */
     .hearts-layer {
       position: fixed;
       inset: 0;
@@ -112,7 +113,8 @@
     <button id="surpriseBtn">Surprise Me</button>
 
     <div id="secret">
-      💌 Counting down every moment until you're back in my arms. See you soon, my love. Thinking of you and smiling. 🌸✨
+      💌 You are the most beautiful part of my life.<br>
+      Saying YES made my world brighter 🌸✨
     </div> 
   </div> 
 
@@ -137,36 +139,48 @@
       noBtn.style.top  = Math.random() * maxY + 'px';
     });
 
-    // --- RED, YELLOW, PINK, BLUE HEARTS ---
+    // --- BLUE, YELLOW, RED, GREEN HEARTS ---
     function spawnHeart() {
       const el = document.createElement('div');
       el.className = 'heart';
       el.textContent = '❤️';
       
-      const colors = ['#ff0000', '#ffff00', '#ff69b4', '#00eeff']; // Red, Yellow, Pink, Blue
+      const colors = ['#00a2ff', '#ffff00', '#ff0000', '#00ff00']; // Blue, Yellow, Red, Green
       el.style.color = colors[Math.floor(Math.random() * colors.length)];
       
       el.style.left = Math.random() * 100 + 'vw';
-      el.style.fontSize = (15 + Math.random() * 25) + 'px';
+      el.style.fontSize = (15 + Math.random() * 30) + 'px';
       el.style.animation = `heartFloat ${4000 + Math.random() * 3000}ms linear forwards`;
       
       heartsLayer.appendChild(el);
       setTimeout(() => el.remove(), 7000);
     }
 
-    // Hearts start immediately on the red page
-    setInterval(spawnHeart, 400);
+    // Start colored hearts immediately
+    setInterval(spawnHeart, 450);
 
-    // --- PAGE TRANSITION ---
+    // --- TRANSITION ---
     yesBtn.addEventListener('click', () => {
-      confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+      confetti({ 
+        particleCount: 150, 
+        spread: 70, 
+        origin: { y: 0.6 },
+        colors: ['#00a2ff', '#ffff00', '#ff0000', '#00ff00']
+      });
 
       setTimeout(() => {
         page1.style.display = 'none';
-        // Force the background to the Pink Gradient for Page 2
+        // Background changes to Pink Gradient for Page 2
         body.style.setProperty('background', 'linear-gradient(180deg, #ff7aa2, #ff9eb8)', 'important');
         page2.style.display = 'block';
-      }, 800);
+      }, 500);
     });
 
-    // ---
+    // --- REVEAL MESSAGE ---
+    surpriseBtn.addEventListener('click', () => {
+      secret.style.display = 'block';
+      surpriseBtn.style.display = 'none';
+    });
+  </script>
+</body>
+</html>
